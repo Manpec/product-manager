@@ -1,0 +1,58 @@
+[
+  {
+    "name": "Product 1",
+    "sku": "SKU001",
+    "description": "Description for Product 1",
+    "image": "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
+    "price": 19.99
+  },
+  {
+    "name": "Product 2",
+    "sku": "SKU002",
+    "description": "Description for Product 2",
+    "image": "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
+    "price": 29.99
+  },
+  {
+    "name": "Product 3",
+    "sku": "SKU003",
+    "description": "Description for Product 3",
+    "image": "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
+    "price": 39.99
+  },
+  {
+    "name": "Product 4",
+    "sku": "SKU004",
+    "description": "Description for Product 4",
+    "image": "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
+    "price": 49.99
+  },
+  {
+    "name": "Product 5",
+    "sku": "SKU005",
+    "description": "Description for Product 5",
+    "image": "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
+    "price": 59.99
+  },
+  {
+    "name": "Product 6",
+    "sku": "SKU006",
+    "description": "Description for Product 6",
+    "image": "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
+    "price": 69.99
+  },
+  {
+    "name": "Product 7",
+    "sku": "SKU007",
+    "description": "Description for Product 7",
+    "image": "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
+    "price": 79.99
+  },
+  {
+    "name": "Product 8",
+    "sku": "SKU008",
+    "description": "Description for Product 8",
+    "image": "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
+    "price": 89.99
+  }
+]
