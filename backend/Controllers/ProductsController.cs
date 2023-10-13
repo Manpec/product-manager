@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using productManagerApi.Data;
 using productManagerApi.Models;
 
 namespace productManagerApi.Controllers;
@@ -7,10 +8,17 @@ namespace productManagerApi.Controllers;
 [ApiController]
 public class ProductsController : ControllerBase
 {
+    private readonly ApplicationDbContext context;
+
+    public ProductsController(ApplicationDbContext context)
+    {
+        this.context = context;
+    }
+
     [HttpGet]
     public IEnumerable<Product> GetProducts()
     {
-        var products = new List<Product>();
+        var products = context.Products.ToList();
 
         return products;
     }
