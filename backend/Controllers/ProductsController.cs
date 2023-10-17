@@ -63,6 +63,22 @@ public class ProductsController : ControllerBase
         return Created("", productDto); //om det lyckas return "201 Created" 
     }
 
+    [HttpDelete("{sku}")]
+    public ActionResult DeleteProduct(string sku)
+    {
+        var product = context.Products.FirstOrDefault(p => p.Sku == sku);
+
+        if(product is null)
+        {
+            return NotFound(new { StatusCode = 404, Message = "Product hittas inte." });
+        }
+
+        context.Products.Remove(product);
+        context.SaveChanges();
+
+        return NoContent(); //204 Not Content
+    }
+   
     private Product MapToProduct(CreateProductRequest createProductRequest)
         => new()
         {
