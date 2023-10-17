@@ -44,6 +44,35 @@ public class ProductsController : ControllerBase
         return productDto; //Status kod "200 OK"
     }
 
+    [HttpPost]
+    public ActionResult<ProductDTO> CreateProduct(CreateProductRequest createProductRequest)
+    {
+        var product = MapToProduct(createProductRequest);
+
+        if(product.Name is null or "")
+        {
+            return BadRequest(); // 400 Bad Request
+        }
+
+        context.Products.Add(product);
+
+        context.SaveChanges();
+
+        var productDto = MapToProductDto(product);
+
+        return Created("", productDto); //om det lyckas return "201 Created" 
+    }
+
+    private Product MapToProduct(CreateProductRequest createProductRequest)
+        => new()
+        {
+            Name = createProductRequest.Name,
+            Sku = createProductRequest.Sku,
+            Description = createProductRequest.Description,
+            Image = createProductRequest.Image,
+            Price = createProductRequest.Price,
+        };
+
     private ProductDTO MapToProductDto(Product product)
         => new()
         {
@@ -55,6 +84,27 @@ public class ProductsController : ControllerBase
             Price = product.Price,
         };
 
+}
+
+public class CreateProductRequest
+{
+    [MaxLength(50)]
+    [Required]
+    public string Name { get; set; }
+
+    [Column(TypeName = "nchar(6)")]
+    [Required]
+    public string Sku { get; set; }
+
+    [MaxLength(500)]
+    public string Description { get; set; }
+
+    [MaxLength(100)]
+    public string Image { get; set; }
+
+    [Range(0, 10000)]
+    [Column(TypeName = "decimal(18, 2)")]
+    public decimal Price { get; set; } = decimal.Zero;
 }
 
 public class ProductDTO
