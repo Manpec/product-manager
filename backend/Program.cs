@@ -4,6 +4,8 @@ using productManagerApi.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors();
+
 // Add services to the container.
 builder.Services.AddDbContext<ApplicationDbContext>
     (options => options.UseSqlServer(
@@ -25,6 +27,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors(builder => builder.WithOrigins("http://localhost:3000")
+            .AllowAnyHeader()
+            .AllowAnyMethod());
 
 app.UseHttpsRedirection();
 
