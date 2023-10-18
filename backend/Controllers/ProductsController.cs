@@ -78,7 +78,48 @@ public class ProductsController : ControllerBase
 
         return NoContent(); //204 Not Content
     }
-   
+
+    [HttpPut("{sku}")]
+    public ActionResult UpdateProduct(string sku, UpdateProductRequest updateProductRequest)
+    {
+        if (updateProductRequest.Sku != sku)
+        {
+            return BadRequest("ID does not match"); //400 Bad Request
+        };
+
+        var product = context.Products.FirstOrDefault(p => p.Sku == sku);
+
+        //Om produkten inte finns ska 404 Not Found returneras.
+        if (product is null)
+        {
+            return NotFound(new { StatusCode = 404, Message = "Produkt hittas inte." });
+        };
+
+        var updatedProduct = MapToProductFromUpdateRequest(updateProductRequest);
+
+        product.Price = updatedProduct.Price;
+        product.Description = updatedProduct.Description;
+        product.Name = updatedProduct.Name;
+        product.Image = updatedProduct.Image; 
+        
+        context.SaveChanges();
+
+        //Om produkten uppdaterades ska 204 No Content returneras.
+        return NoContent();
+    }
+
+    private Product MapToProductFromUpdateRequest(UpdateProductRequest updateProductRequest)
+        => new()
+        {
+            Id = updateProductRequest.Id,
+            Name = updateProductRequest.Name,
+            Sku = updateProductRequest.Sku,
+            Description = updateProductRequest.Description,
+            Image = updateProductRequest.Image,
+            Price = updateProductRequest.Price,
+            
+        };
+
     private Product MapToProduct(CreateProductRequest createProductRequest)
         => new()
         {
@@ -102,6 +143,31 @@ public class ProductsController : ControllerBase
 
 }
 
+public class UpdateProductRequest
+{
+    public int Id { get; set; }
+    [MaxLength(50)]
+    [Required]
+    public string Name { get; set; }
+
+    [Column(TypeName = "nchar(6)")]
+    [Required]
+    public string Sku { get; set; }
+
+    [MaxLength(500)]
+    [Required]
+    public string Description { get; set; }
+
+    [MaxLength(100)]
+    [Required]
+    public string Image { get; set; }
+
+    [Range(0, 10000)]
+    [Required]
+    [Column(TypeName = "decimal(18, 2)")]
+    public decimal Price { get; set; } = decimal.Zero;
+}
+
 public class CreateProductRequest
 {
     [MaxLength(50)]
@@ -113,12 +179,15 @@ public class CreateProductRequest
     public string Sku { get; set; }
 
     [MaxLength(500)]
+    [Required]
     public string Description { get; set; }
 
     [MaxLength(100)]
+    [Required]
     public string Image { get; set; }
 
     [Range(0, 10000)]
+    [Required]
     [Column(TypeName = "decimal(18, 2)")]
     public decimal Price { get; set; } = decimal.Zero;
 }
