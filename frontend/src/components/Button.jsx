@@ -4,8 +4,8 @@ export default function Button({ color, children, handleClick }) {
       light:
         "bg-white text-black hover:bg-black hover:text-white rounded-md px-3.5 py-2.5 hover:cursor-pointer",
       bright:
-        "bg-yellow-200 text-black hover:bg-yellow-400 hover:text-white rounded-md px-3.5 py-2.5 hover:cursor-pointer",
-      danger:"bg-red text-black bg-red-200 hover:bg-red-500 hover:text-black rounded-md px-3.5 py-2.5 hover:cursor-pointer"
+        "bg-green-200 text-black hover:bg-green-500 hover:text-white  rounded-md px-3.5 py-2.5 hover:cursor-pointer",
+      danger:"bg-red text-black bg-red-200 hover:bg-red-500 hover:text-white rounded-md px-3.5 py-2.5 hover:cursor-pointer"
     };
   
     return (
