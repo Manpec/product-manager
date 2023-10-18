@@ -1,6 +1,8 @@
 using productManagerApi.Models;
 using Microsoft.EntityFrameworkCore;
 using productManagerApi.Data;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +19,21 @@ builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc(
+    "v1",
+    new OpenApiInfo
+    {
+        Title = "Product Manager API",
+        Version = "1.0"
+    });
+
+    //to be able to add comments on endpoint in swagger UI 
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+});
 
 var app = builder.Build();
 

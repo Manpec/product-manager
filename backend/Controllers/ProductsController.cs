@@ -17,7 +17,14 @@ public class ProductsController : ControllerBase
         this.context = context;
     }
 
+
+    /// <summary>
+    /// Hämta alla produkter
+    /// </summary>
+    /// <param name="name">Name att filtrerar på</param>
+    /// <returns>Array av produkt</returns>
     [HttpGet]
+    [Produces("application/json")]
     public IEnumerable<ProductDTO> GetProducts([FromQuery] string? name)
     {
         IEnumerable<Product> products = name is not null
@@ -29,29 +36,47 @@ public class ProductsController : ControllerBase
         return productDtos;
     }
 
+    /// <summary>
+    /// Hämta produkt
+    /// </summary>
+    /// <param name="sku">SKU för produkt</param>
+    /// <returns>Produkt</returns>
     [HttpGet("{sku}")]
+    [Produces("application/json")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<ProductDTO> GetProductBySku(string sku)
     {
         var product = context.Products.FirstOrDefault(p => p.Sku == sku);
 
         if (product is null) 
         {
-            return NotFound(); //"404 Mot Found"
+            return NotFound(); 
         }
 
         var productDto = MapToProductDto(product);
 
-        return productDto; //Status kod "200 OK"
+        return productDto; 
     }
 
+
+    /// <summary>
+    /// Lägg till ny produkt
+    /// </summary>
+    /// <param name="createProductRequest">Information om produkten</param>
+    /// <returns>Produkt</returns>
     [HttpPost]
+    [Consumes("application/json")]
+    [Produces("application/json")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public ActionResult<ProductDTO> CreateProduct(CreateProductRequest createProductRequest)
     {
         var product = MapToProduct(createProductRequest);
 
         if(product.Name is null or "")
         {
-            return BadRequest(); // 400 Bad Request
+            return BadRequest(); 
         }
 
         context.Products.Add(product);
@@ -60,10 +85,17 @@ public class ProductsController : ControllerBase
 
         var productDto = MapToProductDto(product);
 
-        return Created("", productDto); //om det lyckas return "201 Created" 
+        return Created("", productDto); 
     }
 
+
+    /// <summary>
+    /// Radera produkt
+    /// </summary>
+    /// <param name="sku">SKU för produkt</param>
     [HttpDelete("{sku}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult DeleteProduct(string sku)
     {
         var product = context.Products.FirstOrDefault(p => p.Sku == sku);
@@ -76,20 +108,29 @@ public class ProductsController : ControllerBase
         context.Products.Remove(product);
         context.SaveChanges();
 
-        return NoContent(); //204 Not Content
+        return NoContent(); 
     }
 
+
+    /// <summary>
+    /// Uppdatera produkt
+    /// </summary>
+    /// <param name="sku">SKU för produkt</param>
+    /// <param name="updateProductRequest">Information om produkten</param>
     [HttpPut("{sku}")]
+    [Consumes("application/json")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult UpdateProduct(string sku, UpdateProductRequest updateProductRequest)
     {
         if (updateProductRequest.Sku != sku)
         {
-            return BadRequest("ID does not match"); //400 Bad Request
+            return BadRequest("SKU does not match"); 
         };
 
         var product = context.Products.FirstOrDefault(p => p.Sku == sku);
 
-        //Om produkten inte finns ska 404 Not Found returneras.
         if (product is null)
         {
             return NotFound(new { StatusCode = 404, Message = "Produkt hittas inte." });
@@ -104,7 +145,6 @@ public class ProductsController : ControllerBase
         
         context.SaveChanges();
 
-        //Om produkten uppdaterades ska 204 No Content returneras.
         return NoContent();
     }
 
@@ -150,6 +190,9 @@ public class UpdateProductRequest
     [Required]
     public string Name { get; set; }
 
+    /// <summary>
+    /// SKU för produkten (6 tecken)
+    /// </summary>
     [Column(TypeName = "nchar(6)")]
     [Required]
     public string Sku { get; set; }
@@ -174,6 +217,9 @@ public class CreateProductRequest
     [Required]
     public string Name { get; set; }
 
+    /// <summary>
+    /// SKU för produkten (6 tecken)
+    /// </summary>
     [Column(TypeName = "nchar(6)")]
     [Required]
     public string Sku { get; set; }
