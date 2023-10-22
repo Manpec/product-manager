@@ -6,6 +6,7 @@ import Search from './components/Search';
 
 
 
+
 function App() {
   const URL = "https://localhost:7012/products"
   const [products, setProducts] = useState([]);
@@ -28,7 +29,7 @@ function App() {
   
   const handleOnAddProduct = (product) => {
     fetch(URL, {
-      method: "POST",
+      method: "post",
       headers:{
         "Content-Type": "application/json",
       },
@@ -45,13 +46,39 @@ function App() {
     .catch((error)=>{
       console.error("Error: ", error)
     });  
-  }
+  };
+
+  const handleOnDelete = (productSku) => {
+    const confirmed = window.confirm("Är du säker på att du vill radera produkten?");
+    
+    if (!confirmed) {
+        return;
+    }
+
+    fetch(`${URL}/${productSku}`, {
+        method: "delete",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            if (response.status === 404) {
+                throw new Error("Produkten hittades inte.");
+            }
+        }
+    })
+    .then(() => {
+        const newProducts = products.filter(x => x.sku !== productSku);
+        setProducts(newProducts);
+    })
+    .catch((error) => {
+        console.error("Error: ", error);
+    });
+  };
 
   return (
     <div className="App">
       <Header />
       <Search />
-      <ProductList products={products} onAddProduct={handleOnAddProduct}/>
+      <ProductList products={products} onAddProduct={handleOnAddProduct} onDeleteProduct={handleOnDelete}/>
     </div>
   );
 }
