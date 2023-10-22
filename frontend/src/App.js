@@ -40,7 +40,7 @@ function App() {
        return response.json();
     }) 
     .then((product) => {
-      console.log(product);
+      setProducts([...products, product]);
     })
     .catch((error)=>{
       console.error("Error: ", error)

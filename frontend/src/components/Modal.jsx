@@ -15,6 +15,18 @@ export default function Modal({ title, onAddProduct }) {
   
   const [errors, setErrors] = useState({});
 
+  const handleCloseModal = () => {
+    setFormData({
+      name: "",
+      sku: "",
+      description: "",
+      image: "",
+      price: "",
+    });
+    setErrors({});
+    setShowModal(false);
+  }
+
   const handleValidation = () => {
     let newErrors = {};
   
@@ -62,9 +74,8 @@ export default function Modal({ title, onAddProduct }) {
       const product = { ...formData };
       
       onAddProduct(product);
-      console.log(product)
-      setShowModal(false);
-      setErrors({})
+     
+      handleCloseModal();
     }
     console.log(handleValidation());
     return
@@ -88,8 +99,7 @@ export default function Modal({ title, onAddProduct }) {
   // Function to handle clicks outside the modal
   const handleOutsideClick = (e) => {
     if (modalRef.current && !modalRef.current.contains(e.target)) {
-      setErrors({})
-      setShowModal(false);
+      handleCloseModal();
     }
   };
 
@@ -110,9 +120,7 @@ export default function Modal({ title, onAddProduct }) {
                 {/*header*/}
                 <div className="flex justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
                   <h3 className="text-3xl font-semibold">New product</h3>
-                  <button className="p-1" onClick={() => {
-                    setErrors({})
-                    setShowModal(false)}}>
+                  <button className="p-1" onClick={handleCloseModal}>
                     <span className="bg-transparent h-6 w-6 text-2xl block outline-none focus:outline-none">
                       <XCircleIcon />
                     </span>
