@@ -2,7 +2,7 @@ import React from "react";
 import Button from "./Button";
 import Modal from "./Modal";
 
-const ProductList = ({ products }) => {
+const ProductList = ({ products, onAddProduct }) => {
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
@@ -10,7 +10,7 @@ const ProductList = ({ products }) => {
           Products
         </h2>
         <div className="flex flex-1 justify-end">
-          <Modal title="Ny Produkt" />
+          <Modal title="Ny Produkt" onAddProduct={onAddProduct} />
         </div>
 
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -33,18 +33,25 @@ const ProductList = ({ products }) => {
             <tbody>
               {products.map((product) => (
                 <tr
-                  key={product.sku}
+                  key={product.id}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover-bg-gray-50 dark-hover-bg-gray-600"
                 >
                   <th
                     scope="row"
                     className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark-text-white"
                   >
-                    {product.name}
+                    {product.id}
                   </th>
+                  <td className="px-6 py-4">{product.name}</td>
                   <td className="px-6 py-4">{product.sku}</td>
                   <td className="px-6 py-4">{product.description}</td>
-                  <td className="px-6 py-4">{product.image}</td>
+                  <td className="px-6 py-4">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-12 h-12"
+                    />
+                  </td>
                   <td className="px-6 py-4">{product.price}</td>
                   <td className="px-6 py-4 text-right">
                     <Button color={"bright"}>Edit</Button>
