@@ -2,7 +2,7 @@ import React from "react";
 import Button from "./Button";
 import Modal from "./Modal";
 
-const ProductList = ({ products, onAddProduct }) => {
+const ProductList = ({ products, onAddProduct, onDeleteProduct }) => {
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
@@ -57,7 +57,12 @@ const ProductList = ({ products, onAddProduct }) => {
                     <Button color={"bright"}>Edit</Button>
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <Button color={"danger"}>Delete</Button>
+                    <Button
+                      color={"danger"}
+                      onClick={() => onDeleteProduct(product.sku)}
+                    >
+                      Delete
+                    </Button>
                   </td>
                 </tr>
               ))}
