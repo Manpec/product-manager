@@ -7,7 +7,7 @@ import Search from './components/Search';
 
 
 function App() {
-  const URL = "http://localhost:3000/products.json"
+  const URL = "https://localhost:7012/products"
   const [products, setProducts] = useState([]);
   
   useEffect(() => {
@@ -26,12 +26,32 @@ function App() {
     });  
   }, []);
   
+  const handleOnAddProduct = (product) => {
+    fetch(URL, {
+      method: "POST",
+      headers:{
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(product),
+    }).then((response)=>{
+      if(!response.ok){
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+       return response.json();
+    }) 
+    .then((product) => {
+      console.log(product);
+    })
+    .catch((error)=>{
+      console.error("Error: ", error)
+    });  
+  }
 
   return (
     <div className="App">
       <Header />
       <Search />
-      <ProductList products={products}/>
+      <ProductList products={products} onAddProduct={handleOnAddProduct}/>
     </div>
   );
 }
