@@ -74,11 +74,45 @@ function App() {
     });
   };
 
+  const handleOnUpdateProduct = (product) => {
+    console.log(product);
+    const confirmed = window.confirm("Är detta korrekt?");
+    
+    if (!confirmed) {
+        return;
+    }
+
+
+    fetch(`${URL}/${product.sku}`, {
+      method: "put", 
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(product),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+      })
+      .then(() => {
+        
+        const updatedProducts = products.map((p) =>
+          p.sku === product.sku ? product : p
+        );
+        setProducts(updatedProducts);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+  };
+
   return (
     <div className="App">
       <Header />
       <Search />
-      <ProductList products={products} onAddProduct={handleOnAddProduct} onDeleteProduct={handleOnDelete}/>
+      {/*  {user?.role === "administrator" ?  <ProductList products={products} onAddProduct={handleOnAddProduct} onDeleteProduct={handleOnDelete} onEditProduct={handleOnUpdateProduct}/> : <ProductListUserView products={products} /> } */}
+      <ProductList products={products} onAddProduct={handleOnAddProduct} onDeleteProduct={handleOnDelete} onEditProduct={handleOnUpdateProduct}/>
     </div>
   );
 }

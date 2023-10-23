@@ -1,8 +1,15 @@
 import React from "react";
 import Button from "./Button";
-import Modal from "./Modal";
+import Modal from "./modals/Modal";
+import EditModal from "./modals/EditModal";
+import {TrashIcon} from "@heroicons/react/24/outline";
 
-const ProductList = ({ products, onAddProduct, onDeleteProduct }) => {
+const ProductList = ({
+  products,
+  onAddProduct,
+  onDeleteProduct,
+  onEditProduct,
+}) => {
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
@@ -54,14 +61,17 @@ const ProductList = ({ products, onAddProduct, onDeleteProduct }) => {
                   </td>
                   <td className="px-6 py-4">{product.price}</td>
                   <td className="px-6 py-4 text-right">
-                    <Button color={"bright"}>Edit</Button>
+                    <EditModal
+                      product={product}
+                      onEditProduct={onEditProduct}
+                    />
                   </td>
                   <td className="px-6 py-4 text-right">
                     <Button
                       color={"danger"}
                       onClick={() => onDeleteProduct(product.sku)}
                     >
-                      Delete
+                      <TrashIcon className="w-4"/>
                     </Button>
                   </td>
                 </tr>
