@@ -25,4 +25,5 @@ public class Product
     [Column(TypeName = "decimal(18, 2)")]
     public required decimal Price { get; set; } = decimal.Zero;
 
+    public ICollection<Category> Categories { get; set; } = new List<Category>();
 }
