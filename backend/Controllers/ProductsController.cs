@@ -94,6 +94,7 @@ public class ProductsController : ControllerBase
     /// </summary>
     /// <param name="sku">SKU för produkt</param>
     [HttpDelete("{sku}")]
+    [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult DeleteProduct(string sku)
@@ -119,6 +120,7 @@ public class ProductsController : ControllerBase
     /// <param name="updateProductRequest">Information om produkten</param>
     [HttpPut("{sku}")]
     [Consumes("application/json")]
+    [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
