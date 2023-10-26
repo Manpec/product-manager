@@ -3,11 +3,50 @@ import './App.css';
 import Header from './components/Header';
 import ProductList from './components/ProductList';
 import Search from './components/Search';
+import CategoryList from './components/CategoryList';
 
 
 
 
 function App() {
+ const URLCategory = "https://localhost:7012/categories"
+ const [categories, setCategories] = useState([]);
+
+ useEffect(() => {
+  fetch(URLCategory)
+  .then((response)=>{
+    if(!response.ok){
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+     return response.json();
+  }) 
+  .then((categories) => {
+    setCategories(categories)
+  })
+  .catch((error)=>{
+    console.error("Error: ", error)
+  });  
+}, []);
+
+const handleOnAddCategory = (id,product) => {
+  fetch(`${URLCategory}/${id}/products`, {
+    method: "post",
+    headers:{
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(product),
+  }).then((response)=>{
+    if(!response.ok){
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+     return response.json();
+  }) 
+  .catch((error)=>{
+    console.error("Error: ", error)
+  });  
+};
+
+
   const URL = "https://localhost:7012/products"
   const [products, setProducts] = useState([]);
   
@@ -82,7 +121,6 @@ function App() {
         return;
     }
 
-
     fetch(`${URL}/${product.sku}`, {
       method: "put", 
       headers: {
@@ -107,12 +145,15 @@ function App() {
       });
   };
 
+
+
   return (
     <div className="App">
       <Header />
       <Search />
       {/*  {user?.role === "administrator" ?  <ProductList products={products} onAddProduct={handleOnAddProduct} onDeleteProduct={handleOnDelete} onEditProduct={handleOnUpdateProduct}/> : <ProductListUserView products={products} /> } */}
-      <ProductList products={products} onAddProduct={handleOnAddProduct} onDeleteProduct={handleOnDelete} onEditProduct={handleOnUpdateProduct}/>
+      <ProductList setProducts={setProducts} categories={categories} products={products} onAddProduct={handleOnAddProduct} onDeleteProduct={handleOnDelete} onEditProduct={handleOnUpdateProduct} onAddCategory={handleOnAddCategory}/>
+      <CategoryList categories={categories}/>
     </div>
   );
 }

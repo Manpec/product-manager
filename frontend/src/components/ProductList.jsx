@@ -1,14 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from "./Button";
 import Modal from "./modals/Modal";
 import EditModal from "./modals/EditModal";
+import  AddProductToCategoryModal from "./modals/AddProductToCategoryModal";
 import {TrashIcon} from "@heroicons/react/24/outline";
 
 const ProductList = ({
+  categories,
   products,
+  setProducts,
   onAddProduct,
   onDeleteProduct,
   onEditProduct,
+  onAddCategory
 }) => {
   return (
     <div className="bg-white">
@@ -17,11 +21,10 @@ const ProductList = ({
           Products
         </h2>
         <div className="flex flex-1 justify-end">
-          <Modal title="Ny Produkt" onAddProduct={onAddProduct} />
+          <Modal title="+ New Product" onAddProduct={onAddProduct} />
         </div>
-
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-          <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+          <table className="w-full text-sm text-left text-gray-600 dark:text-gray-500">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
                 {products.length > 0 ? (
@@ -64,6 +67,15 @@ const ProductList = ({
                     <EditModal
                       product={product}
                       onEditProduct={onEditProduct}
+                    />
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <AddProductToCategoryModal
+                    setProducts={setProducts}
+                    products={products}
+                      product={product}
+                      categories={categories}
+                      onAddCategory={onAddCategory}
                     />
                   </td>
                   <td className="px-6 py-4 text-right">
