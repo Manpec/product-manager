@@ -12,7 +12,7 @@ const ProductList = ({
   onAddProduct,
   onDeleteProduct,
   onEditProduct,
-  onAddCategory
+  onAddProductToCategory
 }) => {
   return (
     <div className="bg-white">
@@ -75,7 +75,7 @@ const ProductList = ({
                     products={products}
                       product={product}
                       categories={categories}
-                      onAddCategory={onAddCategory}
+                      onAddProductToCategory={onAddProductToCategory}
                     />
                   </td>
                   <td className="px-6 py-4 text-right">

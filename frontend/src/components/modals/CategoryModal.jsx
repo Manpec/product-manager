@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React from "react";
 import Button from "../Button";
 
 function CategoryModal({ category, closeModal }) {

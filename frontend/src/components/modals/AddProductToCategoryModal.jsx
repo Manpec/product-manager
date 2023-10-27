@@ -4,7 +4,7 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 
 export default function AddProductToCategoryModal({
   categories,
-  onAddCategory,
+  onAddProductToCategory,
   product,
   products,
   setProducts
@@ -25,7 +25,7 @@ export default function AddProductToCategoryModal({
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    onAddCategory(selectedCategory, product);
+    onAddProductToCategory(selectedCategory, product);
     const category = categories?.find(c => c.id === parseInt(selectedCategory));
     console.log("selectedCategory", category)
    const updatedProduct = {
