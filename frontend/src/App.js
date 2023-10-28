@@ -1,90 +1,152 @@
-import { useEffect, useState } from 'react';
-import './App.css';
-import Header from './components/Header';
-import ProductList from './components/ProductList';
-import Search from './components/Search';
-
-
-
+import { useEffect, useState } from "react";
+import "./App.css";
+import Header from "./components/Header";
+import ProductList from "./components/ProductList";
+import Search from "./components/Search";
+import CategoryList from "./components/CategoryList";
 
 function App() {
-  const URL = "https://localhost:7012/products"
-  const [products, setProducts] = useState([]);
-  
+  const URLCategory = "https://localhost:7012/categories";
+  const [categories, setCategories] = useState([]);
+
   useEffect(() => {
-    fetch(URL)
-    .then((response)=>{
-      if(!response.ok){
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-       return response.json();
-    }) 
-    .then((products) => {
-      setProducts(products)
-    })
-    .catch((error)=>{
-      console.error("Error: ", error)
-    });  
+    fetch(URLCategory)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((categories) => {
+        setCategories(categories);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
   }, []);
-  
-  const handleOnAddProduct = (product) => {
-    fetch(URL, {
+
+  const handleOnAddProductToCategory = (id, product) => {
+    fetch(`${URLCategory}/${id}/products`, {
       method: "post",
-      headers:{
+      headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(product),
-    }).then((response)=>{
-      if(!response.ok){
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-       return response.json();
-    }) 
-    .then((product) => {
-      setProducts([...products, product]);
     })
-    .catch((error)=>{
-      console.error("Error: ", error)
-    });  
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+  };
+
+  // To add new category
+  const handleOnAddCategory = (newCategory) => {
+    fetch("https://localhost:7012/categories/new", {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newCategory),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((category) => {
+             console.log("Category added successfully:", category);
+        setCategories([...categories, category]);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+  };
+
+  const URL = "https://localhost:7012/products";
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    fetch(URL)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((products) => {
+        setProducts(products);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+  }, []);
+
+  const handleOnAddProduct = (product) => {
+    fetch(URL, {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(product),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((product) => {
+        setProducts([...products, product]);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
   };
 
   const handleOnDelete = (productSku) => {
-    const confirmed = window.confirm("Är du säker på att du vill radera produkten?");
-    
+    const confirmed = window.confirm(
+      "Är du säker på att du vill radera produkten?"
+    );
+
     if (!confirmed) {
-        return;
+      return;
     }
 
     fetch(`${URL}/${productSku}`, {
-        method: "delete",
+      method: "delete",
     })
-    .then((response) => {
+      .then((response) => {
         if (!response.ok) {
-            if (response.status === 404) {
-                throw new Error("Produkten hittades inte.");
-            }
+          if (response.status === 404) {
+            throw new Error("Produkten hittades inte.");
+          }
         }
-    })
-    .then(() => {
-        const newProducts = products.filter(x => x.sku !== productSku);
+      })
+      .then(() => {
+        const newProducts = products.filter((x) => x.sku !== productSku);
         setProducts(newProducts);
-    })
-    .catch((error) => {
+      })
+      .catch((error) => {
         console.error("Error: ", error);
-    });
+      });
   };
 
   const handleOnUpdateProduct = (product) => {
     console.log(product);
     const confirmed = window.confirm("Är detta korrekt?");
-    
+
     if (!confirmed) {
-        return;
+      return;
     }
 
-
     fetch(`${URL}/${product.sku}`, {
-      method: "put", 
+      method: "put",
       headers: {
         "Content-Type": "application/json",
       },
@@ -96,7 +158,6 @@ function App() {
         }
       })
       .then(() => {
-        
         const updatedProducts = products.map((p) =>
           p.sku === product.sku ? product : p
         );
@@ -112,7 +173,18 @@ function App() {
       <Header />
       <Search />
       {/*  {user?.role === "administrator" ?  <ProductList products={products} onAddProduct={handleOnAddProduct} onDeleteProduct={handleOnDelete} onEditProduct={handleOnUpdateProduct}/> : <ProductListUserView products={products} /> } */}
-      <ProductList products={products} onAddProduct={handleOnAddProduct} onDeleteProduct={handleOnDelete} onEditProduct={handleOnUpdateProduct}/>
+      <ProductList
+        setProducts={setProducts}
+        categories={categories}
+        products={products}
+        onAddProduct={handleOnAddProduct}
+        onDeleteProduct={handleOnDelete}
+        onEditProduct={handleOnUpdateProduct}
+        onAddProductToCategory={handleOnAddProductToCategory}
+      />
+      <CategoryList
+       categories={categories}
+       onAddCategory={handleOnAddCategory}/>
     </div>
   );
 }

@@ -82,7 +82,6 @@ export default function Modal({ title, onAddProduct }) {
 
       handleCloseModal();
     }
-    console.log(handleValidation());
     return;
   };
 
