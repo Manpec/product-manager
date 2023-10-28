@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import CategoryModal from "./modals/CategoryModal";
+import AddCategoryModal from "./modals/AddCategoryModal";
 
-const CategoryList = ({ products, categories}) => {
+const CategoryList = ({ categories, onAddCategory}) => {
   const [showModal, setShowModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
@@ -15,8 +16,6 @@ const CategoryList = ({ products, categories}) => {
     setShowModal(false);
   };
 
-  console.log(categories);
-  console.log(products);
 
   return (
     <div className="bg-white">
@@ -24,7 +23,9 @@ const CategoryList = ({ products, categories}) => {
         <h2 className="text-2xl font-bold tracking-tight text-gray-900">
           Categories
         </h2>
-
+        <div className="flex flex-1 justify-end">
+          <AddCategoryModal title="+ New Category" onAddCategory={onAddCategory}/>
+        </div>
         <section className="w-fit mx-auto grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5">
           {categories?.map((category) => (
             <div

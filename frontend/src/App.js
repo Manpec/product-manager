@@ -44,8 +44,29 @@ function App() {
       });
   };
 
-  // //To add new category
-  // const handleOnAddCategory = (category) => {};
+  // To add new category
+  const handleOnAddCategory = (newCategory) => {
+    fetch("https://localhost:7012/categories/new", {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newCategory),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((category) => {
+             console.log("Category added successfully:", category);
+        setCategories([...categories, category]);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+  };
 
   const URL = "https://localhost:7012/products";
   const [products, setProducts] = useState([]);
@@ -161,7 +182,9 @@ function App() {
         onEditProduct={handleOnUpdateProduct}
         onAddProductToCategory={handleOnAddProductToCategory}
       />
-      <CategoryList categories={categories} />
+      <CategoryList
+       categories={categories}
+       onAddCategory={handleOnAddCategory}/>
     </div>
   );
 }
