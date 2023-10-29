@@ -6,6 +6,7 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure CORS
 builder.Services.AddCors();
 
 // Add services to the container.
@@ -44,13 +45,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors(builder => builder.WithOrigins("http://localhost:3000")
-            .AllowAnyHeader()
-            .AllowAnyMethod());
-
 app.UseHttpsRedirection();
+app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
-app.UseAuthorization();
+
+//app.UseAuthorization();
 
 app.MapControllers();
 

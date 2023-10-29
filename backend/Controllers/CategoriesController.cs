@@ -33,9 +33,9 @@ public class CategoriesController : ControllerBase
         return categoryDtos;
     }
 
-   
 
-    [HttpPost]
+
+    [HttpPost("new")]
     [Consumes("application/json")]
     [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status201Created)]
