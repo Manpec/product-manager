@@ -4,10 +4,16 @@ import Header from "./components/Header";
 import ProductList from "./components/ProductList";
 import Search from "./components/Search";
 import CategoryList from "./components/CategoryList";
+import { Routes, Route } from "react-router-dom";
+import Home from "./components/Home";
 
 function App() {
+  const URL = "https://localhost:7012/products";
   const URLCategory = "https://localhost:7012/categories";
+
+  const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
 
   useEffect(() => {
     fetch(URLCategory)
@@ -60,16 +66,13 @@ function App() {
         return response.json();
       })
       .then((category) => {
-             console.log("Category added successfully:", category);
+        console.log("Category added successfully:", category);
         setCategories([...categories, category]);
       })
       .catch((error) => {
         console.error("Error: ", error);
       });
   };
-
-  const URL = "https://localhost:7012/products";
-  const [products, setProducts] = useState([]);
 
   useEffect(() => {
     fetch(URL)
@@ -171,20 +174,35 @@ function App() {
   return (
     <div className="App">
       <Header />
-      <Search />
+      <Search products={products} setSearchResults={setSearchResults} />
       {/*  {user?.role === "administrator" ?  <ProductList products={products} onAddProduct={handleOnAddProduct} onDeleteProduct={handleOnDelete} onEditProduct={handleOnUpdateProduct}/> : <ProductListUserView products={products} /> } */}
-      <ProductList
-        setProducts={setProducts}
-        categories={categories}
-        products={products}
-        onAddProduct={handleOnAddProduct}
-        onDeleteProduct={handleOnDelete}
-        onEditProduct={handleOnUpdateProduct}
-        onAddProductToCategory={handleOnAddProductToCategory}
-      />
-      <CategoryList
-       categories={categories}
-       onAddCategory={handleOnAddCategory}/>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route
+          path="/products"
+          element={
+            <ProductList
+              setProducts={setProducts}
+              categories={categories}
+              products={searchResults.length > 0 ? searchResults : products} // 検索結果を表示
+              onAddProduct={handleOnAddProduct}
+              onDeleteProduct={handleOnDelete}
+              onEditProduct={handleOnUpdateProduct}
+              onAddProductToCategory={handleOnAddProductToCategory}
+            />
+          }
+        />
+
+        <Route
+          path="/categories"
+          element={
+            <CategoryList
+              categories={categories}
+              onAddCategory={handleOnAddCategory}
+            />
+          }
+        />
+      </Routes>
     </div>
   );
 }
