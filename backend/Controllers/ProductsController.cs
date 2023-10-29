@@ -3,6 +3,7 @@ using productManagerApi.Data;
 using productManagerApi.Models;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace productManagerApi.Controllers;
 
@@ -28,8 +29,8 @@ public class ProductsController : ControllerBase
     public IEnumerable<ProductDTO> GetProducts([FromQuery] string? name)
     {
         IEnumerable<Product> products = name is not null
-            ? context.Products.Where(p => p.Name.Contains(name))
-            : context.Products.ToList();
+            ? context.Products.Include(p => p.Categories).Where(p => p.Name.Contains(name))
+            : context.Products.Include(p => p.Categories).ToList();
 
         var productDtos = products.Select(MapToProductDto);
 
@@ -170,6 +171,7 @@ public class ProductsController : ControllerBase
             Description = createProductRequest.Description,
             Image = createProductRequest.Image,
             Price = createProductRequest.Price,
+
         };
 
     private ProductDTO MapToProductDto(Product product)
@@ -181,6 +183,12 @@ public class ProductsController : ControllerBase
             Description = product.Description,
             Image = product.Image,
             Price = product.Price,
+            Categories = product.Categories.Select(category => new CategoryDTO
+            {
+                Id = category.Id,
+                Name = category.Name,
+              
+            }).ToList()
         };
 
 }
@@ -253,5 +261,7 @@ public class ProductDTO
     public  string Image { get; set; }
 
     public  decimal Price { get; set; } = decimal.Zero;
+
+    public ICollection<CategoryDTO> Categories { get; set; } = new List<CategoryDTO>();
 }
 
