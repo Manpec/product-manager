@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using productManagerApi.Data;
 using productManagerApi.Models;
@@ -6,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace productManagerApi.Controllers;
-
+[Authorize]
 [Route("[controller]")]
 [ApiController]
 public class CategoriesController : ControllerBase

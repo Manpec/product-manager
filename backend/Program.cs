@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using productManagerApi.Data;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors();
 
 // Add services to the container.
+builder.Services
+  .AddAuthentication()
+  .AddJwtBearer(options =>
+  {
+      var signingKey = Convert.FromBase64String(builder.Configuration["Jwt:SigningSecret"]);
+      options.TokenValidationParameters = new TokenValidationParameters
+      {
+          ValidateIssuer = false,
+          ValidateAudience = false,
+          IssuerSigningKey = new SymmetricSecurityKey(signingKey)
+      };
+  });
+
+
 builder.Services.AddDbContext<ApplicationDbContext>
     (options => options.UseSqlServer(
         builder.Configuration.GetConnectionString("Default")));
@@ -49,7 +64,7 @@ app.UseHttpsRedirection();
 app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 
-//app.UseAuthorization();
+app.UseAuthorization();
 
 app.MapControllers();
 

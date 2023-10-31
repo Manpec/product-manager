@@ -4,9 +4,10 @@ using productManagerApi.Models;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace productManagerApi.Controllers;
-
+[Authorize]
 [Route("[controller]")]
 [ApiController]
 public class ProductsController : ControllerBase
