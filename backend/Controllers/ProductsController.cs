@@ -4,9 +4,10 @@ using productManagerApi.Models;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace productManagerApi.Controllers;
-
+[Authorize]
 [Route("[controller]")]
 [ApiController]
 public class ProductsController : ControllerBase
@@ -26,6 +27,8 @@ public class ProductsController : ControllerBase
     /// <returns>Array av produkt</returns>
     [HttpGet]
     [Produces("application/json")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public IEnumerable<ProductDTO> GetProducts([FromQuery] string? name)
     {
         IEnumerable<Product> products = name is not null
@@ -46,6 +49,7 @@ public class ProductsController : ControllerBase
     [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public ActionResult<ProductDTO> GetProductBySku(string sku)
     {
         var product = context.Products.FirstOrDefault(p => p.Sku == sku);
@@ -66,11 +70,14 @@ public class ProductsController : ControllerBase
     /// </summary>
     /// <param name="createProductRequest">Information om produkten</param>
     /// <returns>Produkt</returns>
+    [Authorize(Roles = "Administrator")]
     [HttpPost]
     [Consumes("application/json")]
     [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public ActionResult<ProductDTO> CreateProduct(CreateProductRequest createProductRequest)
     {
         var product = MapToProduct(createProductRequest);
@@ -94,10 +101,13 @@ public class ProductsController : ControllerBase
     /// Radera produkt
     /// </summary>
     /// <param name="sku">SKU för produkt</param>
+    [Authorize(Roles = "Administrator")]
     [HttpDelete("{sku}")]
     [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public ActionResult DeleteProduct(string sku)
     {
         var product = context.Products.FirstOrDefault(p => p.Sku == sku);
@@ -119,12 +129,15 @@ public class ProductsController : ControllerBase
     /// </summary>
     /// <param name="sku">SKU för produkt</param>
     /// <param name="updateProductRequest">Information om produkten</param>
+    [Authorize(Roles = "Administrator")]
     [HttpPut("{sku}")]
     [Consumes("application/json")]
     [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public ActionResult UpdateProduct(string sku, UpdateProductRequest updateProductRequest)
     {
         if (updateProductRequest.Sku != sku)
