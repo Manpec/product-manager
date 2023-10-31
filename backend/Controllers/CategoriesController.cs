@@ -19,9 +19,16 @@ public class CategoriesController : ControllerBase
         this.context = context;
     }
 
+
+    /// <summary>
+    /// Hämta alla kategorier 
+    /// </summary>
+    /// <param name="name">Name att filtrerar på</param>
+    /// <returns>Array av kategorier</returns>
     [HttpGet]
     [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public IEnumerable<CategoryDTO> GetCategory([FromQuery] string? name)
     {
         IEnumerable<Category> categories = name is not null
@@ -34,13 +41,19 @@ public class CategoriesController : ControllerBase
         return categoryDtos;
     }
 
-
+    /// <summary>
+    /// Lägg till ny kategori
+    /// </summary>
+    /// <param name="createCategoryRequest">Information om kategorin</param>
+    /// <returns>Kategori</returns>
     [Authorize(Roles = "Administrator")]
     [HttpPost("new")]
     [Consumes("application/json")]
     [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public ActionResult<CategoryDTO> CreateCategory(CreateCategoryRequest createCategoryRequest)
     {
         var category = new Category
@@ -60,12 +73,19 @@ public class CategoriesController : ControllerBase
         return Created("", categoryDto);
     }
 
+    /// <summary>
+    /// Lägg till produkt till kategori
+    /// </summary>
+    /// <param name="productRequest">Information om produkt </param>
+    /// <returns>Kategori</returns>
     [Authorize(Roles = "Administrator")]
     [HttpPost("{id}/products")]
     [Consumes("application/json")]
     [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public ActionResult<CategoryDTO> AddProductInCategory(int id, [FromBody] ProductRequest productRequest)
     {
         var product = MapToProduct(productRequest);
@@ -97,7 +117,7 @@ public class CategoriesController : ControllerBase
     }
 
 
-    public Product MapToProduct(ProductRequest productRequest)
+    private Product MapToProduct(ProductRequest productRequest)
         => new()
         {
             Name = productRequest.Name,
@@ -108,7 +128,7 @@ public class CategoriesController : ControllerBase
         };
 
 
-    public CategoryDTO MapToCategoryDto(Category category)
+    private CategoryDTO MapToCategoryDto(Category category)
         => new()
         {
             Id = category.Id,

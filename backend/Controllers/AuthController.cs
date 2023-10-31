@@ -23,7 +23,18 @@ public class AuthController : ControllerBase
         this.config = config;
     }
 
+
+    /// <summary>
+    /// Autentisera en användare och generera en åtkomsttoken.
+    /// </summary>
+    /// <param name="authenticateRequest">Information om användare</param>
+    /// <returns>Returnerar en åtkomsttoken vid framgångsrik autentisering</returns>
     [HttpPost]
+    [HttpPost]
+    [Consumes("application/json")]
+    [Produces("application/json")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TokenDto))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public ActionResult<TokenDto> Authenticate(AuthenticateRequest authenticateRequest)
     {
         var user = context.Users
