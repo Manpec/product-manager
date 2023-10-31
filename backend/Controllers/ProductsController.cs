@@ -67,6 +67,7 @@ public class ProductsController : ControllerBase
     /// </summary>
     /// <param name="createProductRequest">Information om produkten</param>
     /// <returns>Produkt</returns>
+    [Authorize(Roles = "Administrator")]
     [HttpPost]
     [Consumes("application/json")]
     [Produces("application/json")]
@@ -95,6 +96,7 @@ public class ProductsController : ControllerBase
     /// Radera produkt
     /// </summary>
     /// <param name="sku">SKU för produkt</param>
+    [Authorize(Roles = "Administrator")]
     [HttpDelete("{sku}")]
     [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -120,6 +122,7 @@ public class ProductsController : ControllerBase
     /// </summary>
     /// <param name="sku">SKU för produkt</param>
     /// <param name="updateProductRequest">Information om produkten</param>
+    [Authorize(Roles = "Administrator")]
     [HttpPut("{sku}")]
     [Consumes("application/json")]
     [Produces("application/json")]

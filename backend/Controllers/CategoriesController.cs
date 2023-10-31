@@ -35,7 +35,7 @@ public class CategoriesController : ControllerBase
     }
 
 
-
+    [Authorize(Roles = "Administrator")]
     [HttpPost("new")]
     [Consumes("application/json")]
     [Produces("application/json")]
@@ -60,6 +60,7 @@ public class CategoriesController : ControllerBase
         return Created("", categoryDto);
     }
 
+    [Authorize(Roles = "Administrator")]
     [HttpPost("{id}/products")]
     [Consumes("application/json")]
     [Produces("application/json")]

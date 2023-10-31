@@ -6,6 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
 using productManagerApi.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace productManagerApi.Controllers;
 
@@ -25,7 +26,9 @@ public class AuthController : ControllerBase
     [HttpPost]
     public ActionResult<TokenDto> Authenticate(AuthenticateRequest authenticateRequest)
     {
-        var user = context.Users.FirstOrDefault(x => 
+        var user = context.Users
+            .Include(x => x.Roles) // Load all roles for the user
+            .FirstOrDefault(x => 
                 x.UserName == authenticateRequest.UserName
              && x.Password == authenticateRequest.Password);
         
@@ -46,15 +49,22 @@ public class AuthController : ControllerBase
     {
         var signingKey = Convert.FromBase64String(config["Jwt:SigningSecret"]);
 
+        var claims = new List<Claim>
+            {
+                new(ClaimTypes.NameIdentifier, user.FullName)
+            };
+
+        foreach (var role in user.Roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role.Name));
+        }
+
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(signingKey),
                 SecurityAlgorithms.HmacSha256Signature),
-            Subject = new ClaimsIdentity(new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.FullName)
-            })
+            Subject = new ClaimsIdentity(claims)
         };
 
         var jwtTokenHandler = new JwtSecurityTokenHandler();

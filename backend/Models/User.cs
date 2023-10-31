@@ -21,5 +21,6 @@ public class User
   
   public string FullName => $"{FirstName} {LastName}";
 
-  
+    // Navigation property
+    public ICollection<Role> Roles { get; set; } = new List<Role>();
 }
