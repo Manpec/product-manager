@@ -4,6 +4,8 @@ using Microsoft.IdentityModel.Tokens;
 using productManagerApi.Data;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Extensions.Configuration;
+using System.Security.Claims;
+using productManagerApi.Models;
 
 namespace productManagerApi.Controllers;
 
@@ -34,21 +36,25 @@ public class AuthController : ControllerBase
 
         var tokenDto = new TokenDto
         {
-            Token = GenerateToken()
+            Token = GenerateToken(user)
         };
 
         return tokenDto; // 200 OK
     }
 
-    private string GenerateToken()
+    private string GenerateToken(User user)
     {
         var signingKey = Convert.FromBase64String(config["Jwt:SigningSecret"]);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             SigningCredentials = new SigningCredentials(
-            new SymmetricSecurityKey(signingKey),
-            SecurityAlgorithms.HmacSha256Signature)
+                new SymmetricSecurityKey(signingKey),
+                SecurityAlgorithms.HmacSha256Signature),
+            Subject = new ClaimsIdentity(new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.FullName)
+            })
         };
 
         var jwtTokenHandler = new JwtSecurityTokenHandler();
