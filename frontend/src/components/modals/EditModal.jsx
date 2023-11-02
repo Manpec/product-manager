@@ -29,32 +29,34 @@ export default function EditModal({ product, onEditProduct }) {
   const isValidDecimal18_2 = (value) => {
     const regex = /^\d{1,16}\.\d{2}$/;
     return regex.test(value.toString());
-  }
+  };
+  
   const handleValidation = () => {
     let newErrors = {};
-
+  
     if (!formData.name) {
-      newErrors.name = "Vänligen fyll i produkt namn";
+      newErrors.name = "Please fill in the product name.";
     } else if (!formData.name.match(/^[a-zA-Z0-9\s-]+$/)) {
       newErrors.name =
-        "Endast alfabetiska tecken, siffror och bindestreck är tillåtna.";
+        "Only alphabetic characters, numbers, and hyphens are allowed.";
     }
-
+  
     if (formData.description.trim() === "") {
-      newErrors.description = "Vänligen fyll i beskrivning";
+      newErrors.description = "Please fill in the description.";
     }
-
+  
     if (formData.image.trim() === "") {
-      newErrors.image = "Vänligen fyll i bildens URL";
+      newErrors.image = "Please fill in the image URL.";
     }
-
+  
     if (!formData.price) {
-      newErrors.price = "Vänligen fyll i pris";
+      newErrors.price = "Please fill in the price.";
     } else if (!(formData.price >= 0)) {
-      newErrors.price = "Ogiltigt pris, negativt värde";
+      newErrors.price = "Invalid price, negative value.";
     } else if (!isValidDecimal18_2(formData.price)) {
-      newErrors.price = "Ogiltigt format";
+      newErrors.price = "Invalid format.";
     }
+  
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0; // Check if there are no errors
   };

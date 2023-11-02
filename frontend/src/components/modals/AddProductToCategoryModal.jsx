@@ -30,7 +30,7 @@ export default function AddProductToCategoryModal({
     console.log("selectedCategory", category)
    const updatedProduct = {
       ...product,
-      categories: [...product.categories, category],
+      categories: [...product?.categories, category],
     };
 
     // Update the products list with the updated product
