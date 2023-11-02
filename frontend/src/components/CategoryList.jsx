@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import CategoryModal from "./modals/CategoryModal";
 import AddCategoryModal from "./modals/AddCategoryModal";
 
-const CategoryList = ({ categories, onAddCategory}) => {
+
+
+const CategoryList = ({ categories, onAddCategory, user}) => {
   const [showModal, setShowModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
@@ -23,9 +25,11 @@ const CategoryList = ({ categories, onAddCategory}) => {
         <h2 className="text-2xl font-bold tracking-tight text-gray-900">
           Categories
         </h2>
+        {user?.role === "Administrator" ? (       
         <div className="flex flex-1 justify-end">
           <AddCategoryModal title="+ New Category" onAddCategory={onAddCategory}/>
         </div>
+        ) : null}
         <section className="w-fit mx-auto grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5">
           {categories?.map((category) => (
             <div
