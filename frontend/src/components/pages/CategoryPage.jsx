@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import CategoryList from '../CategoryList';
+import { useNavigate } from 'react-router-dom';
 
 const CategoryPage = () => {
+  const nav = useNavigate();
     const { token, user } = useSelector((state) => state.auth);
     const [categories, setCategories] = useState([]);
     const URLCategory = "https://localhost:7012/categories";
 
 
     useEffect(() => {
+      if(token === null){
+        return  nav("/401")
+       }
         fetch(URLCategory, 
         {
           method: "get",

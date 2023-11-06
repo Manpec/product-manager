@@ -11,19 +11,23 @@ const Login = () => {
     username: "",
     password: "",
   });
+  const [error, setError] = useState(""); // Skapa ett state för felmeddelanden
 
   const navigate = useNavigate();
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    // Update the userCredentials state object based on the input field's name
     setUserCredentials({
       ...userCredentials,
       [name]: value,
     });
+  setError("")
   };
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError(""); // Nollställ tidigare felmeddelanden
+
     fetch(`https://localhost:7012/auth`, {
       method: "post",
       headers: {
@@ -32,17 +36,17 @@ const Login = () => {
       body: JSON.stringify(userCredentials),
     })
       .then((response) => {
-        if (!response.ok) {
+        if (response.status === 401) {
+          setError("Wrong email or password"); // Ange felmeddelande om 401-status returneras
+        } else if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         return response.json();
       })
       .then((data) => {
-        console.log(data);
         const token = data.token;
         localStorage.setItem("authToken", token);
         const user = jwtDecode(data.token);
-        console.log(user);
         dispatch(setAuth({ token, user }));
         navigate("/");
       })
@@ -78,6 +82,7 @@ const Login = () => {
                     placeholder="name@company.com"
                     required=""
                   />
+                  
                 </div>
                 <div>
                   <label
@@ -97,6 +102,7 @@ const Login = () => {
                     required=""
                   />
                 </div>
+                {error && <span className="text-red-500">{error}</span>} 
                 <div className="flex items-center justify-between">
                   <div className="flex items-start">
                     <div className="flex items-center h-5">

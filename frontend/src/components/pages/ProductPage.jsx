@@ -3,16 +3,21 @@ import ProductList from "../ProductList";
 import SearchComponent from "../Search";
 import { useSelector } from "react-redux";
 import  ProductCatalog  from "../ProductCatalog";
+import { useNavigate } from "react-router-dom";
 
 
 const ProductPage = () => {
+  const nav = useNavigate();
   const { token, user } = useSelector((state) => state.auth);
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const URL = "https://localhost:7012/products";
-
+  
   useEffect(() => {
+    if(token === null){
+     return nav("/401")
+    }
     fetch(URL, {
       method: "get",
       headers: {
@@ -20,9 +25,10 @@ const ProductPage = () => {
         "Authorization" : `Bearer ${token}`,
       },
     })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+          
         }
         return response.json();
       })
@@ -54,6 +60,7 @@ const ProductPage = () => {
         console.error("Error: ", error);
       });
   }, []);
+
 
   const handleOnAddProduct = (product) => {
     fetch(URL, {

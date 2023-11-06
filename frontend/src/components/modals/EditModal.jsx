@@ -15,13 +15,7 @@ export default function EditModal({ product, onEditProduct }) {
   const [errors, setErrors] = useState({});
 
   const handleCloseModal = () => {
-    setFormData({
-      name: "",
-      sku: "",
-      description: "",
-      image: "",
-      price: "",
-    });
+    
     setErrors({});
     setShowModal(false);
   };
