@@ -15,16 +15,23 @@ function CategoryModal({ category, closeModal }) {
               <thead>
                 <tr>
                   {category?.products?.length > 0 ? (
-                    Object.keys(category?.products?.[0]).map((key) => (
-                      <th
-                        key={key}
-                        scope="col"
-                        className="px-6 py-3 text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
-                      >
-                        {key}
-                      </th>
-                    ))
-                  ) : (
+                   Object.keys(category?.products?.[0]).map((key) => {
+                    if (key !== "categories") {
+                      return (
+                        <th
+                          key={key}
+                          scope="col"
+                          className="px-6 py-3 text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+                        >
+                          {key}
+                        </th>
+                      );
+                    } else {
+                      return null; // Skip rendering the header for "categories"
+                    }
+                  }
+                      )
+                      ) : (
                     <th scope="col" className="px-6 py-3">
                       No Product
                     </th>
