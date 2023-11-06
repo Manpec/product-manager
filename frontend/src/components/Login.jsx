@@ -45,7 +45,10 @@ const Login = () => {
         console.log(user);
         dispatch(setAuth({ token, user }));
         navigate("/");
-      });
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      })
   };
 
   return (
